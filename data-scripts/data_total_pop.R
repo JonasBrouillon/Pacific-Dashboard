@@ -14,11 +14,11 @@ total_pop$indicator<- fct_recode(total_pop$indicator,
 
 total_pop$unit_measure<- fct_recode(total_pop$unit_measure,
                                     "%" = "PERCENT",
-                                    "Number of habs" = "N"
+                                    "habs" = "N"
 )
 
 total_pop <- total_pop %>%
-  mutate(text=paste(Name,"in",time_period,":", obs_value,unit_measure))
+  mutate(text=paste(Name,"in",time_period,":", format(obs_value,big.mark=" "),unit_measure))
 
 
 write_rds(total_pop,here("data","total_pop_pacific.rds"))
