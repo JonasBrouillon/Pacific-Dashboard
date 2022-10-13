@@ -4,6 +4,9 @@ Repository of the Shiny app "Pacific Dashboard" created for the Pacific Dataviz 
 
 # Data sources
 
+All the data used are from the <a href='https://pacificdata.org/ ' target='_blank'>Pacific data hub</a>.
+Data were downloaded by API request via the <a href='https://stats.pacificdata.org/ ' target='_blank'>Pacific data hub explorer</a>.
+
 | Indicator(s)          | Data source                                                                                                                                                                                                                                                                                                                                     |
 |-----------------------|-------------------------------------------------------------------------------------|
 |About PICTS             | <a href='https://stats.pacificdata.org/vis?fs[0]=Topic%2C0%7CMulti-domain%23XDO%23&pg=0&fc=Topic&df[ds]=ds%3ASPC2&df[id]=DF_KEYFACTS&df[ag]=SPC&df[vs]=1.0&pd=2021%2C2021&dq=A..&ly[cl]=INDICATOR&ly[rw]=GEO_PICT' target='_blank'>Pacific data hub : About PICTS</a> |
