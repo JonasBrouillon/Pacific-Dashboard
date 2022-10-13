@@ -115,7 +115,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
       tabItem(
         tabName = "pyramid",  
    fluidPage(h1("Structure by sex and age : population projections and indicators"),   fluidRow(
-          box(closable = FALSE,collapsible = TRUE,  title = p("Population pyramid 1",style="font-family: 'Sedgwick Ave', cursive;"), 
+          box(closable = FALSE,collapsible = TRUE,  title = p("Population pyramid 1",textOutput("indicator_pyr1")), 
             actionButton(inputId = "pyr_button1","Choose countries and years"),
             sidebar =  boxSidebar(id = "pyr_update1",p(style="font-family: 'Sedgwick Ave', cursive;","Countries and years"),  selectInput("pyr_country1", "First country", choices = levels(as.factor(structure_sexe_age_pacific$Name))),
                          selectInput("pyr_year1", "First year", choices = levels(as.factor(structure_sexe_age_pacific$time_period)))
@@ -125,7 +125,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
            tabPanel("Plot",  plotlyOutput( "pyramide_age1",height = "40em")),
            tabPanel("Table"  ,tableOutput("pyr_table1"))
            ),height = "40em"),
-          box(closable = FALSE,collapsible = TRUE,  title = p(style="font-family: 'Sedgwick Ave', cursive;","Population pyramid 2"), 
+          box(closable = FALSE,collapsible = TRUE,  title = p("Population pyramid 2",textOutput("indicator_pyr2")), 
             actionButton(inputId = "pyr_button2","Choose countries and years"),
             sidebar =  boxSidebar(id = "pyr_update2",p(style="font-family: 'Sedgwick Ave', cursive;","Countries and years"),  selectInput("pyr_country2", "Second country", choices = levels(as.factor(structure_sexe_age_pacific$Name)),selected = "Cook Islands"),
                                   selectInput("pyr_year2", "Second year", choices = levels(as.factor(structure_sexe_age_pacific$time_period)))
@@ -136,15 +136,15 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
               tabPanel("Table"  ,tableOutput("pyr_table2"))
             ),height = "40em" )),
         
-         fluidRow(box(closable = FALSE,collapsible = TRUE,  title = p(style="font-family: 'Sedgwick Ave', cursive;","Evolution of the indicator"), 
+         fluidRow(box(closable = FALSE,collapsible = TRUE,  title = p(style="font-family: 'Sedgwick Ave', cursive;color: #ffc433",textOutput("indicator_age")), 
                       actionButton(inputId = "age_button1","Choose indicator and countries"),
                       sidebar =  boxSidebar(id = "age_update1",
                                             selectInput("age_indicator", "Indicator", choices = levels(as.factor(structure_age_pacific$indicator))),
                                             pickerInput("age_country","Countries to show",choices = levels(as.factor(structure_age_pacific$Name)),selected = levels(as.factor(structure_age_pacific$Name)),options = list(`actions-box` = TRUE),multiple = T),
                                             ),
                       
-          tabsetPanel( 
-            tabPanel("Evolution of the indicator", plotlyOutput( "age_plot",height = "48em")),
+          tabsetPanel(  
+            tabPanel( "Evolution of the indicator", plotlyOutput( "age_plot",height = "48em")),
             tabPanel("Last available values" , plotlyOutput( "age_plot2",height = "48em") )),height = "48em"),
       
          
@@ -163,7 +163,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
         )),
         tabItem(
           tabName = "vitals",fluidPage(h1("Vitals stats : mortality and fecondity indicators"),  
-           fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;","Evolution of the indicator"), 
+           fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;",textOutput("indicator_vital")), 
                        actionButton("vital_button1","Choose indicator and countries"),
 
                         sidebar = boxSidebar(id="vital_update1",
@@ -191,11 +191,11 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
           )),
    tabItem(
      tabName = "gdp",fluidPage(h1("Economy : GDP and trade statistics"),  
-     fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;","Evolution of the indicator"), 
+     fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;",textOutput("indicator_gdp")), 
                   actionButton("gdp_button1","Choose indicator and countries"),
                   
                   sidebar = boxSidebar(id="gdp_update1",
-                                       selectInput("gdp_indicator", "Indicator", choices = levels(as.factor(gdp_pacific$indicator)),multiple = FALSE),
+                                       selectInput("gdp_indicator", "Indicator", choices = levels(as.factor(gdp_pacific$indicator)),selected ="GDP per capita" , multiple = FALSE),
                                        conditionalPanel(condition = "input.gdp_indicator == 'Trade Statistics : Total exports' ||
                                                                      input.gdp_indicator == 'Trade Statistics : Imports' ||
                                                                      input.gdp_indicator == 'Trade Statistics : Trade balance'" , 
@@ -216,7 +216,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
    
    tabItem(
      tabName = "geography",fluidPage(h1("Geography : use of land indicators"),  
-     fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;","Evolution of the indicator"), 
+     fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;",textOutput("indicator_geography")), 
                   actionButton("geography_button1","Choose indicator and countries"),
                   
                   sidebar = boxSidebar(id="geography_update1",
@@ -379,6 +379,7 @@ output$pyr_text1<- renderUI({
                   "<b>",   format(round(sum(structure_age1()$n)),big.mark=" "), "<b>","habs" ) )  }} )
 
 
+observe(print(input$pyr_update1))
 ###Bouton
 observeEvent(input$pyr_button1, {
   updateBoxSidebar("pyr_update1")
@@ -422,8 +423,9 @@ structure_age2 <- reactive({structure_sexe_age_pacific%>%
         
       })
     
+output$indicator_pyr1 <- renderText({paste(input$pyr_country1,"in",input$pyr_year1)})
+output$indicator_pyr2 <- renderText({paste(input$pyr_country2,"in",input$pyr_year2)})
 
-    
             
 output$pyr_table2 <- renderTable(pyr_table2())    
     
@@ -440,6 +442,7 @@ output$pyramide_age2<-renderPlotly({ggplotly(
 
 
 
+observe(print(input$pyr_update2))
 ###Bouton
 observeEvent(input$pyr_button2, {
   updateBoxSidebar("pyr_update2")
@@ -474,6 +477,7 @@ output$age_plot2 <- renderPlotly({ggplotly(
     labs(y="",x=paste(as.character(indicateurs_age()$indicator[1]),paste0("(", as.character(indicateurs_age()$unit_measure[1]),")")  ))+
     theme(legend.position='none'),tooltip = "text") })
 
+observe(print(input$age_update1))
 
 ###Bouton
 observeEvent(input$age_button1, {
@@ -490,6 +494,7 @@ text_age_indicators_filter <- reactive({
 })
 
 output$text_age <- renderTable(text_age_indicators_filter()%>%select(-c(3,4)))
+output$indicator_age <- renderText({ HTML(input$age_indicator)})
 output$text_age2 <- renderUI({ HTML(text_age_indicators_filter()%>%select(3)%>%as_vector())})
 output$text_age3 <- renderUI({ HTML(text_age_indicators_filter()%>%select(4)%>%as_vector())})
 
@@ -599,6 +604,7 @@ vital_stats_pacific%>%
 
 
 
+observe(print(input$vital_update1))
 
 ###Bouton
 observeEvent(input$vital_button1, {
@@ -644,6 +650,7 @@ text_vital_indicators_filter <- reactive({
 })
 
 output$text_vital <- renderTable(text_vital_indicators_filter()%>%select(-c(3,4)))
+output$indicator_vital <- renderText({text_vital_indicators_filter()%>%select(1)%>%as_vector()})
 output$text_vital2 <- renderUI({HTML(text_vital_indicators_filter()%>%select(3)%>%as_vector())})
 output$text_vital3 <- renderUI({HTML(text_vital_indicators_filter()%>%select(4)%>%as_vector())})
 
@@ -742,6 +749,8 @@ gdp_filter <- reactive({
     filter(indicator==input$gdp_indicator & Name %in% c(input$gdp_country))}  })
 
 
+observe(print(input$gdp_update1))
+
 ###Bouton
 observeEvent(input$gdp_button1, {
   updateBoxSidebar("gdp_update1")
@@ -828,6 +837,8 @@ text_gdp_indicators_filter <- reactive({
 })
 
 output$text_gdp <- renderTable(text_gdp_indicators_filter()%>%select(-c(3,4)))
+output$indicator_gdp <- renderText({ text_gdp_indicators_filter()%>%select(1)%>%as_vector()})
+
 output$text_gdp2 <- renderUI({ HTML(text_gdp_indicators_filter()%>%select(3)%>%as_vector())})
 output$text_gdp3 <- renderUI({ HTML(text_gdp_indicators_filter()%>%select(4)%>%as_vector())})
 
@@ -941,6 +952,7 @@ geography_filter <- reactive({
     geography_pacific%>%
       filter(indicator==input$geography_indicator & Name %in% c(input$geography_country))}  })
 
+observe(print(input$geography_update1))
 
 ###Bouton
 observeEvent(input$geography_button1, {
@@ -1032,6 +1044,7 @@ text_geography_indicators_filter <- reactive({
 })
 
 output$text_geography <- renderTable(text_geography_indicators_filter()%>%select(-c(3,4)))
+output$indicator_geography <- renderText({ text_geography_indicators_filter()%>%select(1)%>%as_vector()})
 output$text_geography2 <- renderUI({ HTML(text_geography_indicators_filter()%>%select(3)%>%as_vector())})
 output$text_geography3 <- renderUI({ HTML(text_geography_indicators_filter()%>%select(4)%>%as_vector())})
 
