@@ -1,11 +1,23 @@
 # Pacific-Dashboard
-Repository of the Shiny app "Pacific Dashboard" created for the Pacific Dataviz Challenge 2022. You can run the application locally by download the repository and run the app.R script
+Repository of the Shiny app "Pacific Dashboard" created for the Pacific Dataviz Challenge 2022. 
 
+You can run the application locally by download the repository and run the app.R script
+
+The "data" folder contain the data used by app.R
+
+The "scripts" folder contain the scripts used by app.R
+
+The "scripts-data" folder contain the scripts used initally to download and cleaning data
+
+The "www" folder contain pictures and CSS customized theme.
 
 # Data sources
 
 All the data used are from the <a href='https://pacificdata.org/ ' target='_blank'>Pacific data hub</a>.
+
 Data were downloaded by API request via the <a href='https://stats.pacificdata.org/ ' target='_blank'>Pacific data hub explorer</a>.
+
+
 
 | Indicator(s)          | Data source                                                                                                                                                                                                                                                                                                                                     |
 |-----------------------|-------------------------------------------------------------------------------------|
