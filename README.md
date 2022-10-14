@@ -3,11 +3,11 @@ Repository of the Shiny app "Pacific Dashboard" created for the Pacific Dataviz 
 
 You can run the application locally by download the repository and run the app.R script
 
-The "data" folder contain the data used by app.R
+The "data" folder contain the data used by app.R .
 
-The "scripts" folder contain the scripts used by app.R
+The "scripts" folder contain the scripts used by app.R .
 
-The "scripts-data" folder contain the scripts used initally to download and cleaning data
+The "scripts-data" folder contain the scripts used initally to download and cleaning data.
 
 The "www" folder contain pictures and CSS customized theme.
 
