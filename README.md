@@ -1,13 +1,13 @@
 # Pacific-Dashboard
 Repository of the Shiny app "Pacific Dashboard" created for the Pacific Dataviz Challenge 2022. 
 
-You can run the application locally by download the repository and run the app.R script
+You can run the application locally by download the repository and run the app.R script (verify you have installed needed packages).
 
 The "data" folder contain the data used by app.R .
 
-The "scripts" folder contain the scripts used by app.R .
+The "data-scripts" folder contain the scripts used initally to download and cleaning data.
 
-The "scripts-data" folder contain the scripts used initally to download and cleaning data.
+The "scripts" folder contain the scripts used by app.R .
 
 The "www" folder contain pictures and CSS customized theme.
 
