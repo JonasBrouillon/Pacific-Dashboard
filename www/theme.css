@@ -1,32 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Sedgwick+Ave&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap')
+
+
                             body {
-        font-family: 'Sedgwick Ave', cursive;
+        font-family: 'Montserrat'; font-size: 18px;
       }
-      .navbar-nav > li > a {font-family: 'Permanent Marker', cursive;
+      .navbar-nav > li > a {font-family: 'Montserrat';
       color: #ffc433}
 	  
 
 * {
-        font-family: 'Sedgwick Ave', cursive;
+        font-family: 'Montserrat';font-size: 18px;
 	  }	  
 	  p {
-        font-family: 'Sedgwick Ave', cursive;
+        font-family: 'Montserrat';font-size: 18px;
       color: #ffc433
 	  }  
         h1 {
-        font-family: 'Sedgwick Ave', cursive;
+        font-family: 'Montserrat';
       color: #ffc433
 	  }
 	  
 	  h2 {
-        font-family: 'Sedgwick Ave', cursive;
+        font-family: 'Montserrat';
 		
 		
           }
 		  
       
       .shiny-input-container {
-      font-family: 'Sedgwick Ave', cursive;
+      font-family: 'Montserrat';
       }
       
