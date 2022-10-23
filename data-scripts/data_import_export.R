@@ -40,7 +40,7 @@ import_export2$unit_measure <- fct_recode(import_export2$unit_measure,
 import_export_pacific <- import_export%>%
   select(time_period,geo_pict,Name,obs_value,indicator,unit_measure,Alpha_3)%>%
   rbind(import_export2%>%select(time_period,geo_pict,Name,indicator,obs_value,unit_measure,Alpha_3))%>%
-  mutate(text=paste(Name,"in",time_period,":", obs_value,unit_measure))%>%
+  mutate(text=paste(Name,"in",time_period,":", format(obs_value,big.mark=" "), unit_measure))%>%
   filter(Name!="Pitcairn")
 
 
@@ -49,7 +49,7 @@ url <- 'https://stats-nsi-stable.pacificdata.org/rest/data/SPC,DF_NMDI_OTH,1.0/A
 remittances <- readSDMX(url)%>%as_tibble()%>%janitor::clean_names()%>%
   left_join(ISO_3166_1, by = c("geo_pict" = "Alpha_2"))%>%filter(!geo_pict %in% c("_T", "_TXPNG", "MELXPNG", "MEL", "POL", "MIC"))%>%
   mutate(indicator='Volume of remittances',unit_measure= "% of GDP",
-         text=paste(Name,"in",time_period,":", obs_value,unit_measure))
+         text=paste(Name,"in",time_period,":", format(obs_value,big.mark=" "),  unit_measure))
 
 import_export_pacific <- import_export_pacific%>%bind_rows(remittances)  
  
