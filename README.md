@@ -1,5 +1,5 @@
 # Pacific-Dashboard
-Repository of the Shiny app <a href="https://jbrouillon.shinyapps.io/Pacific-Dashboard/ " target='_blank'> Pacific Dashboard</a> created for the Pacific Dataviz Challenge 2022. 
+Repository of the Shiny app <a href="https://jbrouillon.shinyapps.io/Pacific-Dashboard/ " target='_blank'> Pacific Dashboard</a> created for the <a href="https://dataviz.pacificdata.org/ " target='_blank'>  Pacific Dataviz Challenge 2022. 
 
 You can run the application locally by download the repository and run the app.R script (verify you have installed needed packages).
 
