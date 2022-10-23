@@ -30,17 +30,22 @@ library(sf)
 library(lubridate)
 library(extrafont)
 library(gitlink)
+library(extrafont)
+library("emojifont")
+
+
+font_add_google(name = "Montserrat")
+showtext_auto()
 conflict_prefer("filter","dplyr")
 conflict_prefer_all("shinydashboardPlus")
-font_add_google(name = "Sedgwick Ave",   
-                family = "sedgwick")
-showtext_auto()
+
+
 
 source(here("scripts", "import_donnees.R"),encoding = "utf8")
 source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
 
   ui<- dashboardPage( skin = "midnight",
-  dashboardHeader(title = p("Pacific countries indicators dashboard",style="font-family: 'Permanent Marker', cursive;color: #ffc433"), titleWidth = 450),
+  dashboardHeader(title = p("Pacific countries indicators dashboard",style="font-family: 'Montserrat';color: #ffc433;font-size:20px;"), titleWidth = 450),
   dashboardSidebar(width = 350,sidebarMenu(
     menuItem("Presentation",tabName = "presentation",icon = icon("question")),
     menuItem("Structure by sex and age",tabName = "pyramid",icon = icon("person-cane")),
@@ -61,7 +66,8 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
         font-weight: bold;
       font-size:18px;
       }
-    "))), 
+    "))
+    ), 
       tabItems(
         tabItem(tabName = "presentation",fluidPage(mainPanel(ribbon_css("https://github.com/JonasBrouillon/Pacific-Dashboard.git", text = "Repository link", fade = T,position = "left"),
           tags$figure(
@@ -90,23 +96,23 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
             h1("Presentation of the Pacific countries indicators dashboard"),
             
             p("Welcome in the Pacific countries indicators dashboard.",style="font-size:20px;"),
-            p("This dashboard was created as part of the Pacific Dataviz Challenge 2022, the goal is to have a simple and friendly way to visualize the indicators provided by the Pacific community"),
-            p("The dashboard is composed of 5 tab decicated to differents thematics"),
+            p("This dashboard was created as part of the Pacific Dataviz Challenge 2022, the goal is to have a simple and friendly way to visualize the indicators provided by the Pacific Community (SPC)."),
+            p("The dashboard is composed of 5 tab decicated to differents thematics :"),
             tags$div(tags$ul(
-              tags$li(tags$span(icon("person-cane"),"Structur by sex and age : provide pyramid population comparisons and indicators about sex & age structur")),
-              tags$li(tags$span(icon("heart"),"Vitals stats : provide indicators about mortality and fecondity")),
-              tags$li(icon("dollar"),tags$span("Economy : provide indicators about GDP and trade")),
-              tags$li(icon("map"),tags$span("Geography : provide indicators about population density, urbanization and coastal population")),
-              tags$li(icon("magnifying-glass"),tags$span("Correlations and variable crossing : provide crossed analysis of the differents variables using Hierarchical clustering"))
+              tags$li(tags$span(icon("person-cane"),"Structur by sex and age : provide pyramid population comparisons and indicators about sex & age structur.")),
+              tags$li(tags$span(icon("heart"),"Vitals stats : provide indicators about mortality and fecondity.")),
+              tags$li(icon("dollar"),tags$span("Economy : provide indicators about Gross Domestic Product (GDP) and trade.")),
+              tags$li(icon("map"),tags$span("Geography : provide indicators about population density, urbanization and coastal population.")),
+              tags$li(icon("magnifying-glass"),tags$span("Correlations and variable crossing : provide crossed analysis of the differents variables using Hierarchical clustering."))
               )),
             p("The four first tab allow user to choose the indicator and the countries to display."),
             p("User can plot the evolution of the indicator or display the last available values for it."),
-            p("Each tab have also a map to spatially vizualise the indicator, the geographical units of the maps are the Exclusive Economic Zone (EEZ) of each country"),width = 12),
+            p("Each tab also includes a map to visualize the indicator in space, the geographical units of the maps being the exclusive economic zone (EEZ) of each country."),width = 12),
            
             
-           fluidRow(column(box(title = p("About the SPC members",tags$img(src = "spc_logo.png",width = 100)),  
+           fluidRow(column(h2("About the SPC members",tags$img(src = "spc_logo.png",width = 100)),  
                  tabsetPanel( tabPanel(title = "Table", tableOutput("table_about")),
-                              tabPanel(title = "Map", leafletOutput("map_about",height = "50em"))),height = "50em",width = 12),width = 12))
+                              tabPanel(title = "Map", leafletOutput("map_about",height = "50em"))),width = 12))
             
             )
           
@@ -114,10 +120,10 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
       
       tabItem(
         tabName = "pyramid",  
-   fluidPage(h1("Structure by sex and age : population projections and indicators"),   fluidRow(
-          box(closable = FALSE,collapsible = TRUE,  title = p("Population pyramid 1",textOutput("indicator_pyr1")), 
-            actionButton(inputId = "pyr_button1","Choose countries and years"),
-            sidebar =  boxSidebar(id = "pyr_update1",p(style="font-family: 'Sedgwick Ave', cursive;","Countries and years"),  selectInput("pyr_country1", "First country", choices = levels(as.factor(structure_sexe_age_pacific$Name))),
+   fluidPage( tags$style("#indicator_pyr1 {font-size:22px;}"),tags$style("#indicator_pyr2 {font-size:22px;}"),tags$style("#indicator_age {font-size:22px;}"),h1("Structure by sex and age : population projections and indicators"),   fluidRow(
+          box(closable = FALSE,collapsible = F,  title = p("Population pyramid 1",textOutput("indicator_pyr1"), style='font-size:22px;'), 
+            actionButton(inputId = "pyr_button1","Choose countries and years", style='height:60px; font-size:18px;'),
+            sidebar =  boxSidebar(id = "pyr_update1",p(style="font-family: 'Montserrat';","Countries and years"),  selectInput("pyr_country1", "First country", choices = levels(as.factor(structure_sexe_age_pacific$Name))),
                          selectInput("pyr_year1", "First year", choices = levels(as.factor(structure_sexe_age_pacific$time_period)))
                          ),  
             htmlOutput("pyr_text1"), 
@@ -125,19 +131,19 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
            tabPanel("Plot",  plotlyOutput( "pyramide_age1",height = "40em")),
            tabPanel("Table"  ,tableOutput("pyr_table1"))
            ),height = "40em"),
-          box(closable = FALSE,collapsible = TRUE,  title = p("Population pyramid 2",textOutput("indicator_pyr2")), 
-            actionButton(inputId = "pyr_button2","Choose countries and years"),
-            sidebar =  boxSidebar(id = "pyr_update2",p(style="font-family: 'Sedgwick Ave', cursive;","Countries and years"),  selectInput("pyr_country2", "Second country", choices = levels(as.factor(structure_sexe_age_pacific$Name)),selected = "Cook Islands"),
+          box(closable = FALSE,collapsible = F,  title = p("Population pyramid 2",textOutput("indicator_pyr2"), style='font-size:22px;'), 
+            actionButton(inputId = "pyr_button2","Choose countries and years", style='height:60px; font-size:18px;'),
+            sidebar =  boxSidebar(id = "pyr_update2",p(style="font-family: 'Montserrat';","Countries and years"),  selectInput("pyr_country2", "Second country", choices = levels(as.factor(structure_sexe_age_pacific$Name)),selected = "Cook Islands"),
                                   selectInput("pyr_year2", "Second year", choices = levels(as.factor(structure_sexe_age_pacific$time_period)))
             ),
-            textOutput("pyr_text2"), 
+            htmlOutput("pyr_text2"), 
             tabsetPanel( 
               tabPanel("Plot",  plotlyOutput( "pyramide_age2",height = "40em")),
               tabPanel("Table"  ,tableOutput("pyr_table2"))
             ),height = "40em" )),
         
-         fluidRow(box(closable = FALSE,collapsible = TRUE,  title = p(style="font-family: 'Sedgwick Ave', cursive;color: #ffc433",textOutput("indicator_age")), 
-                      actionButton(inputId = "age_button1","Choose indicator and countries"),
+         fluidRow(box(closable = FALSE,collapsible = TRUE,  title = p(style="font-family: 'Montserrat';color: #ffc433",textOutput("indicator_age")), 
+                      actionButton(inputId = "age_button1","Choose indicator and countries", style='height:60px; font-size:18px;'),
                       sidebar =  boxSidebar(id = "age_update1",
                                             selectInput("age_indicator", "Indicator", choices = levels(as.factor(structure_age_pacific$indicator))),
                                             pickerInput("age_country","Countries to show",choices = levels(as.factor(structure_age_pacific$Name)),selected = levels(as.factor(structure_age_pacific$Name)),options = list(`actions-box` = TRUE),multiple = T),
@@ -148,23 +154,23 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
             tabPanel("Last available values" , plotlyOutput( "age_plot2",height = "48em") )),height = "48em"),
       
          
-         box(title = p(style="font-family: 'Sedgwick Ave', cursive;","Map of indicator"),  leafletOutput("age_map",height = "60em"),height = "60em")
+         box(title = p(style="font-family: 'Montserrat';font-size:22px;","Map of indicator"),  leafletOutput("age_map",height = "80em"),height = "80em")
          ),
-         box(tableOutput("text_age"),
+         fluidRow(column( tableOutput("text_age"),
              
              infoBoxOutput("info_box_age_max"),
              infoBoxOutput("info_box_age_min"),
              p("Sources :"),
              uiOutput("text_age2"),
-             uiOutput("text_age3")
+             uiOutput("text_age3"),width = 12)
          ),
         
         
         )),
         tabItem(
-          tabName = "vitals",fluidPage(h1("Vitals stats : mortality and fecondity indicators"),  
-           fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;",textOutput("indicator_vital")), 
-                       actionButton("vital_button1","Choose indicator and countries"),
+          tabName = "vitals",fluidPage(tags$style("#indicator_vital {font-size:22px;}"),h1("Vitals stats : mortality and fecondity indicators"),  
+           fluidRow(box(title = p(style="font-family: 'Montserrat';",textOutput("indicator_vital")), 
+                       actionButton("vital_button1","Choose indicator and countries", style='height:60px; font-size:18px;'),
 
                         sidebar = boxSidebar(id="vital_update1",
                                              selectInput("vital_indicator", "Indicator", choices = levels(as.factor(vital_stats_pacific$indicator)),selected = "Life expectancy at birth"),
@@ -174,25 +180,25 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
                        tabsetPanel( 
                          tabPanel("Evolution of the indicator", plotlyOutput( "vital_plot",height = "48em")),
                          tabPanel("Last available values" , plotlyOutput( "vital_plot2",height = "48em") )),height = "48em"),
-          box(title = p(style="font-family: 'Sedgwick Ave', cursive;","Map of indicator"),  leafletOutput("vital_map",height = "60em"),height = "60em"))
+          box(title = p(style="font-family: 'Montserrat';font-size:22px;","Map of indicator"),  leafletOutput("vital_map",height = "80em"),height = "80em"))
           
           ,
           
-          box(tableOutput("text_vital"),
+          fluidRow(column(tableOutput("text_vital"),
               infoBoxOutput("info_box_vital_max"),
               infoBoxOutput("info_box_vital_min"),
               p("Sources :"),
               uiOutput("text_vital2"),
-              uiOutput("text_vital3")
-              )
+              uiOutput("text_vital3"),width = 12
+              ))
           
           
           
           )),
    tabItem(
-     tabName = "gdp",fluidPage(h1("Economy : GDP and trade statistics"),  
-     fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;",textOutput("indicator_gdp")), 
-                  actionButton("gdp_button1","Choose indicator and countries"),
+     tabName = "gdp",fluidPage(tags$style("#indicator_gdp {font-size:22px;}"),h1("Economy : GDP and trade statistics"),  
+     fluidRow(box(title = p(style="font-family: 'Montserrat';",textOutput("indicator_gdp")), 
+                  actionButton("gdp_button1","Choose indicator and countries", style='height:60px; font-size:18px;'),
                   
                   sidebar = boxSidebar(id="gdp_update1",
                                        selectInput("gdp_indicator", "Indicator", choices = levels(as.factor(gdp_pacific$indicator)),selected ="GDP per capita" , multiple = FALSE),
@@ -204,20 +210,20 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
                   tabsetPanel( 
                     tabPanel("Evolution of the indicator", plotlyOutput( "gdp_plot",height = "48em")),
                     tabPanel("Last available values" , plotlyOutput( "gdp_plot2",height = "48em") )),height = "48em"),
-              box(title = p(style="font-family: 'Sedgwick Ave', cursive;","Map of indicator"),  leafletOutput("gdp_map",height = "60em"),height = "60em")),
+              box(title = p(style="font-family: 'Montserrat';font-size:22px;","Map of indicator"),  leafletOutput("gdp_map",height = "80em"),height = "80em")),
      
-     box(tableOutput("text_gdp"),
+     fluidRow(column(tableOutput("text_gdp"),
          infoBoxOutput("info_box_gdp_max"),
          infoBoxOutput("info_box_gdp_min"),
          p("Sources :"),
          uiOutput("text_gdp2"),
-         uiOutput("text_gdp3")
+         uiOutput("text_gdp3"),width = 12)
      ))),
    
    tabItem(
-     tabName = "geography",fluidPage(h1("Geography : use of land indicators"),  
-     fluidRow(box(title = p(style="font-family: 'Sedgwick Ave', cursive;",textOutput("indicator_geography")), 
-                  actionButton("geography_button1","Choose indicator and countries"),
+     tabName = "geography",fluidPage(tags$style("#indicator_geography {font-size:22px;}"),h1("Geography : use of land indicators"),  
+     fluidRow(box(title = p(style="font-family: 'Montserrat';",textOutput("indicator_geography")), 
+                  actionButton("geography_button1","Choose indicator and countries", style='height:60px; font-size:18px;'),
                   
                   sidebar = boxSidebar(id="geography_update1",
                                        selectInput("geography_indicator", "Indicator", choices = levels(as.factor(geography_pacific$indicator)),multiple = FALSE,selected = "Population density"),
@@ -227,60 +233,56 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
                   tabsetPanel( 
                     tabPanel("Evolution of the indicator", plotlyOutput( "geography_plot",height = "48em")),
                     tabPanel("Last available values" , plotlyOutput( "geography_plot2",height = "48em") )),height = "48em"),
-              box(title = p(style="font-family: 'Sedgwick Ave', cursive;","Map of indicator"),  leafletOutput("geography_map",height = "60em"),height = "60em")),
+              box(title = p(style="font-family: 'Montserrat';font-size:22px;","Map of indicator"),  leafletOutput("geography_map",height = "80em"),height = "80em")),
      
-     box(tableOutput("text_geography"),
+     fluidRow(column(tableOutput("text_geography"),
          infoBoxOutput("info_box_geography_max"),
          infoBoxOutput("info_box_geography_min"),
          p("Sources :"),
          uiOutput("text_geography2"),
-         uiOutput("text_geography3")
-     ))),
+         uiOutput("text_geography3"),width = 12)
+     ))), 
    tabItem(tabName = "correlation",
            fluidPage( h1("Correlations and variables crossing"),
-           fluidRow(box(title = p("Hierarchical clustering analysis"),
+           fluidRow(box(title = p("Hierarchical clustering analysis", style='font-size:22px;'),
              p("This page is an attempt at a global analysis by crossing the different variables presented in this dashboard."),
                  p("12 variables were selected and a statistical analysis named 'Hierarchical clustering' was performed on the data. Data were previously normalized by substracting the minimum and dividing by the maximum of all observations."),
                  p("This analysis permitted to classify Pacific countries into 3 groups :"),
              tags$div(tags$ul(
-               tags$li(tags$span("Group 1 : American Samoa , Cook Islands , Fiji , French Polynesia , Guam , New Caledonia , Niue , Northern Mariana Islands , Palau , Wallis and Futuna."),
+               tags$li(tags$span( "Group 1 : American Samoa , Cook Islands , Fiji , French Polynesia , Guam , New Caledonia , Niue , Northern Mariana Islands , Palau , Wallis and Futuna.",style="color:#E41A1C;"  ),
                        tags$div(tags$ul(  
-                         tags$li(tags$span("Low dependency ratio, high median age, high life expectancy at birth")),
-                        tags$li(tags$span("Low infant mortality rate, low total fertility rate")),
-                        tags$li(tags$span("High GDP per capita and high trade balance deficit")))),
-                       tags$li(tags$span("Group 2 : Kiribati , Marshall Islands , Micronesia, Federated States of , Nauru , Samoa , Tokelau , Tonga , Tuvalu."),
+                         tags$li(tags$span(emoji("chart_with_upwards_trend"),"High median age, high life expectancy at birth.")),
+                        tags$li(tags$span(emoji("chart_with_downwards_trend"),"Low infant mortality rate, low total fertility rate.")),
+                        tags$li(tags$span(emoji("chart_with_upwards_trend"),"High GDP per capita and high trade balance deficit")))),
+                       tags$li(tags$span("Group 2 : Kiribati , Marshall Islands , Micronesia, Federated States of , Nauru , Samoa , Tokelau , Tonga , Tuvalu.",style="color: #377EB8;"),
                                tags$div(tags$ul(  
-                                 tags$li(tags$span("High population density and high percentage of population living above 1km from coast")),
-                                 tags$li(tags$span("Medium values for others indicators")))))),
-               tags$span("Group 3 : Papua New Guinea , Solomon Islands , Vanuatu."),
+                                 tags$li(tags$span(emoji("chart_with_upwards_trend"),"High population density and high percentage of population living above 1km from coast.")),
+                                 tags$li(tags$span(emoji("bar_chart"),"Medium values for others indicators.")))))),
+               tags$span("Group 3 : Papua New Guinea , Solomon Islands , Vanuatu.",style="color:#4DAF4A;"),
                tags$div(tags$ul(  
-                 tags$li(tags$span("Low median age, low life expectancy at birth")),
-                 tags$li(tags$span("High infant mortality rate, high total fertility rate")),
-                 tags$li(tags$span("Low GDP per capita and low trade balance deficit"))))
+                 tags$li(tags$span(emoji("chart_with_downwards_trend"),"Low median age, low life expectancy at birth.")),
+                 tags$li(tags$span(emoji("chart_with_upwards_trend"),"High infant mortality rate, high total fertility rate.")),
+                 tags$li(tags$span(emoji("chart_with_downwards_trend"),"Low GDP per capita and low trade balance deficit."))))
                  )),
-             p("Summarised statistics for each group on the table below"),
+             p("Summarised statistics for each group on the table below :"),
              gt_output("table_cluster")) ,
+
              
-             
-             box(title = p("Heatmap of clusters"),
-                 p("This side allows you to visualize indicators and clusters groups with heatmaps"),
-                 p("A heatmap is another way to visualize hierarchical clustering. It’s also called a false colored image, where data values are transformed to color scale."),
-                 p("Heat maps allow us to simultaneously visualize clusters of samples and features. First hierarchical clustering is done of both the rows and the columns of the data matrix."),
-                 p("The columns/rows of the data matrix are re-ordered according to the hierarchical clustering result, putting similar observations close to each other."),
-                 p("The blocks of ‘high’ and ‘low’ values are adjacent in the data matrix. Finally, a color scheme is applied for the visualization and the data matrix is displayed."),
+             box(title = p("Heatmap of clusters", style='font-size:22px;'),
+                 p("This side allows you to visualize indicators and clusters groups with heatmaps."),
                  p("Visualizing the data matrix in this way can help to find the variables that appear to be characteristic for each sample cluster."),
+                 p("Countries are ordering by their cluster group (colors in the right), data are normalized so values are from 0 to 1. More the cell is brown and more the value is high, more the cell is green and more the value is low."),
               plotlyOutput( "heatmap1",height = "56em"))),
-            fluidRow(box(title = p("Map of the clusters"),  leafletOutput("map_cluster",height = "55em")),
-             box(title = p("Heatmap of the correlation matrix"), p("The second heatmap allow you to visualize the correlation matrix betwen variables"),
+            fluidRow(box(title = p("Map of the clusters", style='font-size:22px;'),  leafletOutput("map_cluster",height = "68em")),
+             box(title = p("Heatmap of the correlation matrix", style='font-size:22px;'), p("The second heatmap allow you to visualize the correlation matrix betwen variables."),
                p("A correlation matrix is a table showing correlation coefficients between variables. Each cell in the table shows the correlation between two variables."),
-               p("More the value is high, more there is a positive correlation betwen the 2 variables. More the value is negative, more there is a negative correlation betwen the 2 variables"),
+               p("More the value is high, more there is a positive correlation betwen the 2 variables. More the value is negative, more there is a negative correlation betwen the 2 variables."),
                plotlyOutput( "heatmap2",height = "40em"),
                height = "48em")))
           
            
            )
-   
-   
+
    )))
 
 
@@ -294,7 +296,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
       
       output$map_about <-   renderLeaflet({ 
         pal_about <- colorNumeric(
-          palette = "Blues",
+          palette = "BrBG",
           domain =  about_picts$pacific_community_membership,reverse = F
         )
         
@@ -303,7 +305,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
           addPolygons(data = about_picts,stroke = FALSE, 
                       fillOpacity = 0.5, smoothFactor = 0.5, color =~pal_about(pacific_community_membership),label =~lapply(text,htmltools::HTML)  , labelOptions = labelOptions( 
                         style = list("font-weight" = "normal", padding = "3px 8px"), 
-                        textsize = "13px", 
+                        textsize = "15px", 
                         direction = "auto"))%>%
           addLegend("topright", pal = pal_about, values = ~pacific_community_membership,title ="Member of SPC since",labFormat = labelFormat(big.mark="")) })
 
@@ -365,7 +367,7 @@ output$pyramide_age1<-renderPlotly({ggplotly(
     scale_y_continuous(labels = function(x){ifelse(x<0,scales::percent(x*-1,accuracy=1),
                                                    scales::percent(x,accuracy=1))},breaks = c(-0.06,-0.05,-0.04,-0.03,-0.02,-0.01,0,
                                                                                                 0.01,0.02,0.03,0.04,0.05,0.06))+
-    theme_bw(base_family = "sedgwick")+labs(x="",y="",fill=""),tooltip = "text") })
+    theme_bw(base_family = "Montserrat")+labs(x="",y="",fill=""),tooltip = "text") })
 
 
 
@@ -399,14 +401,14 @@ structure_age2 <- reactive({structure_sexe_age_pacific%>%
            text=ifelse(percent>0, paste(scales::percent(percent,accuracy = 0.01),"of the population"),
                         paste(scales::percent(percent*-1,accuracy = 0.01),"of the population")))})
 
-      output$pyr_text2<- renderText({
-        
-        if(as.numeric(input$pyr_year2)>year(today()) ){
-          paste("The total population of",input$pyr_country2,"in",input$pyr_year2, "will be of",
-                format(round(sum(structure_age1()$n)),big.mark=" "),"habs" ) }else{
-                  
-                  paste("The total population of",input$pyr_country2,"in",input$pyr_year2, "is of",
-                        format(round(sum(structure_age2()$n)),big.mark=" "),"habs" ) }} )
+output$pyr_text2<- renderUI({
+  
+  if(as.numeric(input$pyr_year2)>year(today()) ){
+    HTML(paste("The total population of",input$pyr_country2,"in",input$pyr_year2, "will be of",
+               "<b>",  format(round(sum(structure_age2()$n)),big.mark=" "),"<b>",  "habs" )) }else{
+                 
+                 HTML(paste("The total population of",input$pyr_country2,"in",input$pyr_year2, "is of",
+                            "<b>",   format(round(sum(structure_age2()$n)),big.mark=" "), "<b>","habs" ) )  }} )
       
 
     pyr_table2 <-reactive({structure_age2()%>%select(age,percent,sex)%>%mutate(percent=ifelse(percent<0,percent*-1,percent))%>%
@@ -437,7 +439,7 @@ output$pyramide_age2<-renderPlotly({ggplotly(
           scale_y_continuous(labels = function(x){ifelse(x<0,scales::percent(x*-1,accuracy=1),
                                                          scales::percent(x,accuracy=1))},breaks = c(-0.06,-0.05,-0.04,-0.03,-0.02,-0.01,0,
                                                                                                       0.01,0.02,0.03,0.04,0.05,0.06))+
-          theme_bw(base_family = "sedgwick")+labs(x="",y="",fill=""),tooltip = "text")})
+          theme_bw(base_family = "Montserrat")+labs(x="",y="",fill=""),tooltip = "text")})
 
 
 
@@ -459,7 +461,7 @@ output$age_plot <- renderPlotly({ggplotly(
   ggplot(indicateurs_age(),aes(x=as.numeric(time_period),y=obs_value,color=Name,group=Name,text=text))+
     geom_point()+
     geom_line()+
-    theme_bw(base_family = "sedgwick")+
+    theme_bw(base_family = "Montserrat")+
     scale_color_manual(values = c25)+
     labs(x="Year",y=paste(as.character(indicateurs_age()$indicator[1]),paste0("(", as.character(indicateurs_age()$unit_measure[1]),")")  ) ) ,tooltip = "text")
     })
@@ -472,7 +474,7 @@ output$age_plot2 <- renderPlotly({ggplotly(
          ,aes(x=obs_value,y=fct_reorder(Name,obs_value),text=text))+
     geom_segment( aes(yend=Name, xend=0)) +
     geom_point( size=4, aes(color=Name))+
-    theme_bw(base_family = "sedgwick")+
+    theme_bw(base_family = "Montserrat")+
     scale_color_manual(values = c25)+
     labs(y="",x=paste(as.character(indicateurs_age()$indicator[1]),paste0("(", as.character(indicateurs_age()$unit_measure[1]),")")  ))+
     theme(legend.position='none'),tooltip = "text") })
@@ -510,10 +512,8 @@ age_max <- reactive({
 })
 
 output$info_box_age_max <- renderInfoBox({infoBox(title = "Highest value",paste(age_max()$obs_value,
-                                                                                age_max()$unit_measure
-),subtitle =paste(age_max()$Name,"in",
-                  age_max()$time_period
-) 
+                                                                                age_max()$unit_measure),subtitle =paste(age_max()$Name,"in",
+                  age_max()$time_period),icon = tags$i(class = "fas fa-thumbs-up", style="font-size: 48px; color: white")
 
 )})
 
@@ -531,7 +531,7 @@ age_min <- reactive({
 output$info_box_age_min <- renderInfoBox({infoBox(title = "Lowest value",paste(age_min()$obs_value,
                                                                                age_min()$unit_measure
 ),subtitle =paste(age_min()$Name,"in",
-                  age_min()$time_period),color = "red" 
+                  age_min()$time_period),color = "red" ,icon = tags$i(class = "fas fa-thumbs-down", style="font-size: 48px; color: white")
 
 )})
 
@@ -562,7 +562,7 @@ output$age_map <- renderLeaflet({
     addPolygons(data = indicateurs_age_geo(),stroke = FALSE, 
                 fillOpacity = 0.5, smoothFactor = 0.5, color = ~pal(obs_value),label =~text   , labelOptions = labelOptions( 
                   style = list("font-weight" = "normal", padding = "3px 8px"), 
-                  textsize = "13px", 
+                  textsize = "15px", 
                   direction = "auto"))%>%
     addLegend("topright", pal = pal, values = ~obs_value,title = paste(as.character(indicateurs_age()$indicator[1]),paste0("(", as.character(indicateurs_age()$unit_measure[1]),")")  ) )
 })
@@ -582,7 +582,7 @@ observe({
     addPolygons(data = indicateurs_age_geo(),stroke = FALSE, 
                 fillOpacity = 0.5, smoothFactor = 0.5, color = ~pal(obs_value),label =~text   , labelOptions = labelOptions( 
                   style = list("font-weight" = "normal", padding = "3px 8px"), 
-                  textsize = "13px", 
+                  textsize = "15px", 
                   direction = "auto"))
 
   
@@ -625,7 +625,7 @@ output$vital_plot <- renderPlotly({ggplotly(
   ggplot(vital_stats_filter(),aes(x=as.numeric(time_period),y=obs_value,color=Name,group=Name,text=text))+
     geom_point()+
     geom_line()+
-    theme_bw(base_family = "sedgwick")+
+    theme_bw(base_family = "Montserrat")+
     scale_color_manual(values = c25)+
     labs(x="Year",y=paste(as.character(vital_stats_filter()$indicator[1]),paste0("(", as.character(vital_stats_filter()$unit_measure[1]),")")  ) ) ,tooltip = "text")})
 
@@ -636,10 +636,10 @@ output$vital_plot2 <- renderPlotly({ggplotly(
            ,aes(x=obs_value,y=fct_reorder(Name,obs_value),text=text))+
     geom_segment( aes(yend=Name, xend=0)) +
     geom_point( size=4, aes(color=Name))+
-    theme_bw(base_family = "sedgwick")+
+    theme_bw(base_family = "Montserrat")+
     scale_color_manual(values = c25)+
-    theme(legend.position='none'),tooltip = "text")+
-    labs(y="", x=paste(as.character(vital_stats_filter()$indicator[1]),paste0("(", as.character(vital_stats_filter()$unit_measure[1]),")")  ) ) })
+    theme(legend.position='none')+
+    labs(y="", x=paste(as.character(vital_stats_filter()$indicator[1]),paste0("(", as.character(vital_stats_filter()$unit_measure[1]),")")  ) ),tooltip = "text") })
 
 
 
@@ -668,7 +668,7 @@ output$info_box_vital_max <- renderInfoBox({infoBox(title = "Highest value",past
                                                                                    vital_max()$unit_measure
                                                                                    ),subtitle =paste(vital_max()$Name,"in",
                                                                                                      vital_max()$time_period
-                                                                                                     ) 
+                                                                                                     ) ,icon = tags$i(class = "fas fa-thumbs-up", style="font-size: 48px; color: white")
                                                       
                                                     )})
 
@@ -686,7 +686,7 @@ vital_min <- reactive({
 output$info_box_vital_min <- renderInfoBox({infoBox(title = "Lowest value",paste(vital_min()$obs_value,
                                                                                   vital_min()$unit_measure
 ),subtitle =paste(vital_min()$Name,"in",
-                  vital_min()$time_period),color = "red" 
+                  vital_min()$time_period),color = "red" ,icon = tags$i(class = "fas fa-thumbs-down", style="font-size: 48px; color: white")
 
 )})
 
@@ -703,7 +703,7 @@ output$vital_map <- renderLeaflet({
     addPolygons(data = vital_stats_geo(),stroke = FALSE, 
                 fillOpacity = 0.5, smoothFactor = 0.5, color =~pal2(obs_value),label =~text   , labelOptions = labelOptions( 
                   style = list("font-weight" = "normal", padding = "3px 8px"), 
-                  textsize = "13px", 
+                  textsize = "15px", 
                   direction = "auto"))%>%
     addLegend("topright", pal = pal2, values = ~obs_value,title = paste(as.character(vital_stats_geo()$indicator[1]),paste0("(", as.character(vital_stats_geo()$unit_measure[1]),")")  ) )
   
@@ -724,7 +724,7 @@ observe({
     addPolygons(data = vital_stats_geo(),stroke = FALSE, 
                 fillOpacity = 0.5, smoothFactor = 0.5, color = ~pal2(obs_value),label =~text   , labelOptions = labelOptions( 
                   style = list("font-weight" = "normal", padding = "3px 8px"), 
-                  textsize = "13px", 
+                  textsize = "15px", 
                   direction = "auto"))
   
   })
@@ -773,7 +773,7 @@ output$gdp_plot <- renderPlotly({
   ggplot(gdp_filter(),aes(x=as.numeric(time_period),y=obs_value,color=Name,group=Name,text=text))+
     geom_point()+
     geom_line()+
-    theme_bw(base_family = "sedgwick")+
+    theme_bw(base_family = "Montserrat")+
     scale_y_continuous(labels = function(x){scales::dollar(x)})+
     scale_color_manual(values = c25)+
     labs(color="",x="Year",y=paste(as.character(gdp_filter()$indicator[1]),paste0("(", as.character(gdp_filter()$unit_measure[1]),")")  ) ),tooltip = "text")}else{
@@ -781,7 +781,7 @@ output$gdp_plot <- renderPlotly({
     ggplot(gdp_filter(),aes(x=as.numeric(time_period),y=obs_value,color=Name,group=Name,text=text))+
       geom_point()+
       geom_line()+
-      theme_bw(base_family = "sedgwick")+
+      theme_bw(base_family = "Montserrat")+
       scale_y_continuous(labels = function(x){scales::percent(x/100)})+
       scale_color_manual(values = c25)+
       labs(color="",x="Year",y=paste(as.character(gdp_filter()$indicator[1]),paste0("(", as.character(gdp_filter()$unit_measure[1]),")")  ) ),tooltip = "text")}})
@@ -797,7 +797,7 @@ output$gdp_plot2 <- renderPlotly({
          ,aes(x=obs_value,y=fct_reorder(Name,obs_value),text=text))+
     geom_segment( aes(yend=Name, xend=0)) +
     geom_point( size=4, aes(color=Name))+
-    theme_bw(base_family = "sedgwick")+
+    theme_bw(base_family = "Montserrat")+
     scale_color_manual(values = c25)+
     labs(color="",x=paste(as.character(gdp_filter()$indicator[1]),paste0("(", as.character(gdp_filter()$unit_measure[1]),")")  ),y="" )+
     scale_x_continuous(labels = function(x){scales::dollar(x)})+
@@ -810,7 +810,7 @@ output$gdp_plot2 <- renderPlotly({
                ,aes(x=obs_value,y=fct_reorder(Name,obs_value),text=text))+
           geom_segment( aes(yend=Name, xend=0)) +
           geom_point( size=4, aes(color=Name))+
-          theme_bw(base_family = "sedgwick")+
+          theme_bw(base_family = "Montserrat")+
           scale_color_manual(values = c25)+
           labs(color="",x=paste(as.character(gdp_filter()$indicator[1]),paste0("(", as.character(gdp_filter()$unit_measure[1]),")")  ),y="" )+
           scale_x_continuous(labels = function(x){scales::percent(x/100)})+
@@ -852,11 +852,11 @@ gdp_max <- reactive({
   
 })
 
-output$info_box_gdp_max <- renderInfoBox({infoBox(title = "Highest value",paste(gdp_max()$obs_value,
+output$info_box_gdp_max <- renderInfoBox({infoBox(title = "Highest value",paste(format(gdp_max()$obs_value,big.mark=" "),
                                                                                 gdp_max()$unit_measure
 ),subtitle =paste(gdp_max()$Name,"in",
                   gdp_max()$time_period
-) 
+),icon = tags$i(class = "fas fa-thumbs-up", style="font-size: 48px; color: white") 
 
 )})
 
@@ -871,10 +871,10 @@ gdp_min <- reactive({
   
 })
 
-output$info_box_gdp_min <- renderInfoBox({infoBox(title = "Lowest value",paste(gdp_min()$obs_value,
+output$info_box_gdp_min <- renderInfoBox({infoBox(title = "Lowest value",paste(format(gdp_min()$obs_value,big.mark=" "),
                                                                                gdp_min()$unit_measure
 ),subtitle =paste(gdp_min()$Name,"in",
-                  gdp_min()$time_period),color = "red" 
+                  gdp_min()$time_period),color = "red",icon = tags$i(class = "fas fa-thumbs-down", style="font-size: 48px; color: white") 
 
 )})
 
@@ -893,7 +893,7 @@ if(gdp_geo()$unit_measure[1]=="% of GDP" ){
     addPolygons(data = gdp_geo(),stroke = FALSE, 
                 fillOpacity = 0.5, smoothFactor = 0.5, color =~pal2(obs_value),label =~text   , labelOptions = labelOptions( 
                   style = list("font-weight" = "normal", padding = "3px 8px"), 
-                  textsize = "13px", 
+                  textsize = "15px", 
                   direction = "auto"))%>%
     addLegend("topright", pal = pal2, values = ~obs_value,title = paste(as.character(gdp_geo()$indicator[1]),paste0("(", as.character(gdp_geo()$unit_measure[1]),")")  ), labFormat = labelFormat( suffix = "%" ))}else{
       
@@ -903,7 +903,7 @@ if(gdp_geo()$unit_measure[1]=="% of GDP" ){
         addPolygons(data = gdp_geo(),stroke = FALSE, 
                     fillOpacity = 0.5, smoothFactor = 0.5, color =~pal2(obs_value),label =~text   , labelOptions = labelOptions( 
                       style = list("font-weight" = "normal", padding = "3px 8px"), 
-                      textsize = "13px", 
+                      textsize = "15px", 
                       direction = "auto"))%>%
         addLegend("topright", pal = pal2, values = ~obs_value,title = paste(as.character(gdp_geo()$indicator[1]),paste0("(", as.character(gdp_geo()$unit_measure[1]),")")  ), labFormat = labelFormat( suffix = "$" ))  
     }
@@ -927,7 +927,7 @@ observe({
     addPolygons(data = gdp_geo(),stroke = FALSE, 
                 fillOpacity = 0.5, smoothFactor = 0.5, color = ~pal2(obs_value),label =~text   , labelOptions = labelOptions( 
                   style = list("font-weight" = "normal", padding = "3px 8px"), 
-                  textsize = "13px", 
+                  textsize = "15px", 
                   direction = "auto"))
   
 })
@@ -978,7 +978,7 @@ output$geography_plot <- renderPlotly({
       ggplot(geography_filter(),aes(x=as.numeric(time_period),y=obs_value,color=Name,group=Name,text=text))+
         geom_point()+
         geom_line()+
-        theme_bw(base_family = "sedgwick")+
+        theme_bw(base_family = "Montserrat")+
         scale_y_continuous(labels = function(x){paste(x,"per km²")})+
         scale_color_manual(values = c25)+
         labs(color="",x="Year",y=paste(as.character(geography_filter()$indicator[1]),paste0("(", as.character(geography_filter()$unit_measure[1]),")")  ) ),tooltip = "text")}else{
@@ -986,7 +986,7 @@ output$geography_plot <- renderPlotly({
             ggplot(geography_filter(),aes(x=as.numeric(time_period),y=obs_value,color=Name,group=Name,text=text))+
               geom_point()+
               geom_line()+
-              theme_bw(base_family = "sedgwick")+
+              theme_bw(base_family = "Montserrat")+
               scale_y_continuous(labels = function(x){scales::percent(x/100)})+
               scale_color_manual(values = c25)+
               labs(color="",x="Year",y=paste(as.character(geography_filter()$indicator[1]),paste0("(", as.character(geography_filter()$unit_measure[1]),")")  ) ),tooltip = "text")}})
@@ -1004,7 +1004,7 @@ output$geography_plot2 <- renderPlotly({
              ,aes(x=obs_value,y=fct_reorder(Name,obs_value),text=text))+
         geom_segment( aes(yend=Name, xend=0)) +
         geom_point( size=4, aes(color=Name))+
-        theme_bw(base_family = "sedgwick")+
+        theme_bw(base_family = "Montserrat")+
         scale_color_manual(values = c25)+
         labs(color="",x=paste(as.character(geography_filter()$indicator[1]),paste0("(", as.character(geography_filter()$unit_measure[1]),")")  ),y="" )+
         scale_x_continuous(labels = function(x){paste(x,"per km²")})+
@@ -1017,7 +1017,7 @@ output$geography_plot2 <- renderPlotly({
                    ,aes(x=obs_value,y=fct_reorder(Name,obs_value),text=text))+
               geom_segment( aes(yend=Name, xend=0)) +
               geom_point( size=4, aes(color=Name))+
-              theme_bw(base_family = "sedgwick")+
+              theme_bw(base_family = "Montserrat")+
               scale_color_manual(values = c25)+
               labs(color="",x=paste(as.character(geography_filter()$indicator[1]),paste0("(", as.character(geography_filter()$unit_measure[1]),")")  ),y="" )+
               scale_x_continuous(labels = function(x){scales::percent(x/100)})+
@@ -1062,7 +1062,7 @@ output$info_box_geography_max <- renderInfoBox({infoBox(title = "Highest value",
                                                                                       geography_max()$unit_measure
 ),subtitle =paste(geography_max()$Name,"in",
                   geography_max()$time_period
-) 
+),icon = tags$i(class = "fas fa-thumbs-up", style="font-size: 48px; color: white") 
 
 )})
 
@@ -1080,7 +1080,7 @@ geography_min <- reactive({
 output$info_box_geography_min <- renderInfoBox({infoBox(title = "Lowest value",paste(geography_min()$obs_value,
                                                                                      geography_min()$unit_measure
 ),subtitle =paste(geography_min()$Name,"in",
-                  geography_min()$time_period),color = "red" 
+                  geography_min()$time_period),color = "red",icon = tags$i(class = "fas fa-thumbs-down", style="font-size: 48px; color: white") 
 
 )})
 
@@ -1099,7 +1099,7 @@ output$geography_map <- renderLeaflet({
       addPolygons(data = geography_geo(),stroke = FALSE, 
                   fillOpacity = 0.5, smoothFactor = 0.5, color =~pal2(obs_value),label =~text   , labelOptions = labelOptions( 
                     style = list("font-weight" = "normal", padding = "3px 8px"), 
-                    textsize = "13px", 
+                    textsize = "15px", 
                     direction = "auto"))%>%
       addLegend("topright", pal = pal2, values = ~obs_value,title = paste(as.character(geography_geo()$indicator[1]),paste0("(", as.character(geography_geo()$unit_measure[1]),")")  ), labFormat = labelFormat( suffix = "%" ))}else{
         
@@ -1109,7 +1109,7 @@ output$geography_map <- renderLeaflet({
           addPolygons(data = geography_geo(),stroke = FALSE, 
                       fillOpacity = 0.5, smoothFactor = 0.5, color =~pal2(obs_value),label =~text   , labelOptions = labelOptions( 
                         style = list("font-weight" = "normal", padding = "3px 8px"), 
-                        textsize = "13px", 
+                        textsize = "15px", 
                         direction = "auto"))%>%
           addLegend("topright", pal = pal2, values = ~obs_value,title = paste(as.character(geography_geo()$indicator[1]),paste0("(", as.character(geography_geo()$unit_measure[1]),")")  ), labFormat = labelFormat( suffix = " habs per km²" ))  
       }
@@ -1133,7 +1133,7 @@ observe({
     addPolygons(data = geography_geo(),stroke = FALSE, 
                 fillOpacity = 0.5, smoothFactor = 0.5, color = ~pal2(obs_value),label =~text   , labelOptions = labelOptions( 
                   style = list("font-weight" = "normal", padding = "3px 8px"), 
-                  textsize = "13px", 
+                  textsize = "15px", 
                   direction = "auto"))
   
 })
@@ -1143,25 +1143,30 @@ observe({
 
 output$heatmap1 <-renderPlotly({ heatmaply(
   percentize(indicators_matrice%>%
-               column_to_rownames("Name")%>%select(-c(cluster))),
+               column_to_rownames("Name")%>%select(-c(Cluster))),
   xlab = "",
-  ylab = "", 
-  main = "",colors = colorRampPalette(rev(brewer.pal(3, "BrBG")))(256),k_col = 3,k_row = 3, margins = c(40, 130)
-)})
+  ylab = "", margins = c(40, 130,100,100), 
+  main = "",colors = colorRampPalette(rev(brewer.pal(3, "BrBG")))(256),k_col = 3,k_row = 3, grid_gap = 1,
+  row_side_colors = indicators_matrice$cluster,show_dendrogram = F,row_side_palette = colorRampPalette(brewer.pal(3, "Set1")),column_text_angle = 90,  plot_method = c("plotly"), hide_colorbar = TRUE) %>%
+    plotly::layout(showlegend = FALSE,
+                   annotations = list(
+                     visible = FALSE
+                   ))
+})
 
 output$heatmap2 <- renderPlotly({
   
   heatmaply_cor(
     cor(indicators_matrice%>%
-          column_to_rownames("Name")%>%select(-c(cluster,volume_of_remittances))),
+          column_to_rownames("Name")%>%select(-c(Cluster,`Volume of remittances`))),
     xlab = "",
-    ylab = "", 
+    ylab = "", margins = c(40, 130), plot_method = c("plotly"),
     main = "")
   
 })
 
 output$table_cluster <- render_gt(
- gtsummary::tbl_summary(indicators_matrice_b%>%select(-c(Name)),
+ gtsummary::tbl_summary(indicators_matrice%>%select(-c(Name)),
     by=Cluster , 
     statistic = all_continuous() ~ "{mean} ({min}, {max})"
   ) %>%    
@@ -1174,16 +1179,30 @@ output$table_cluster <- render_gt(
       columns = label,
       rows = label %in% c("Trade balance","Volume of remittances"),
       footnote = "In % of GDP"
-    )%>% as_gt()%>% 
+    )%>%add_overall(last=T)%>% as_gt()%>% 
     tab_header(
       title = "Characteristics of the hierarchical clustering groups",
       subtitle = "Made with last available values for each country"
-    )
+    ) %>%tab_style(
+      style = list(
+        cell_fill(color =  "#E41A1C")),
+      locations = cells_column_labels(
+        columns = vars(stat_1)))%>%
+   tab_style(
+     style = list(
+       cell_fill(color = "#377EB8")),
+     locations =cells_column_labels(
+       columns = vars(stat_2)))%>%
+   tab_style(
+     style = list(
+       cell_fill(color = "#4DAF4A")),
+     locations = cells_column_labels(
+       columns = vars(stat_3)))
   
   )
 
 output$map_cluster <- renderLeaflet({
-  factpal <- colorFactor(brewer.pal(3,"Set2"), indicators_matrice_b$Cluster)
+  factpal <- colorFactor(brewer.pal(3,"Set1"), indicators_matrice$Cluster)
   
   
    leaflet(indicators_matrice_b%>%left_join(iso)%>%left_join(text_indicators_matrice)%>%mutate(text=paste(paste(Name,paste0("(",Cluster ,")")),text,sep=" : </p>"))%>%
@@ -1191,7 +1210,7 @@ output$map_cluster <- renderLeaflet({
      addPolylines(weight = 1,color = "black")%>%
      addPolygons(stroke = FALSE, smoothFactor = 0.5, fillOpacity = 0.5,label =~lapply(text,htmltools::HTML)   , labelOptions = labelOptions( 
                    style = list("font-weight" = "normal", padding = "3px 8px"), 
-                   textsize = "13px", 
+                   textsize = "15px", 
                    direction = "auto"),color = ~factpal(Cluster))%>%addLegend("topright", pal = factpal, values = ~Cluster)
      
 })
