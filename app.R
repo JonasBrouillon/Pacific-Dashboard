@@ -1147,7 +1147,7 @@ output$heatmap1 <-renderPlotly({ heatmaply(
   xlab = "",
   ylab = "", margins = c(40, 130,100,100), 
   main = "",colors = colorRampPalette(rev(brewer.pal(3, "BrBG")))(256),k_col = 3,k_row = 3, grid_gap = 1,
-  row_side_colors = indicators_matrice$cluster,show_dendrogram = F,row_side_palette = colorRampPalette(brewer.pal(3, "Set1")),column_text_angle = 90,  plot_method = c("plotly"), hide_colorbar = TRUE) %>%
+  row_side_colors = indicators_matrice$Cluster,show_dendrogram = F,row_side_palette = colorRampPalette(brewer.pal(3, "Set1")),  plot_method = c("plotly"), hide_colorbar = TRUE) %>%
     plotly::layout(showlegend = FALSE,
                    annotations = list(
                      visible = FALSE
@@ -1187,17 +1187,17 @@ output$table_cluster <- render_gt(
       style = list(
         cell_fill(color =  "#E41A1C")),
       locations = cells_column_labels(
-        columns = vars(stat_1)))%>%
+        columns = c(stat_1)))%>%
    tab_style(
      style = list(
        cell_fill(color = "#377EB8")),
      locations =cells_column_labels(
-       columns = vars(stat_2)))%>%
+       columns = c(stat_2)))%>%
    tab_style(
      style = list(
        cell_fill(color = "#4DAF4A")),
      locations = cells_column_labels(
-       columns = vars(stat_3)))
+       columns = c(stat_3)))
   
   )
 
@@ -1205,7 +1205,7 @@ output$map_cluster <- renderLeaflet({
   factpal <- colorFactor(brewer.pal(3,"Set1"), indicators_matrice$Cluster)
   
   
-   leaflet(indicators_matrice_b%>%left_join(iso)%>%left_join(text_indicators_matrice)%>%mutate(text=paste(paste(Name,paste0("(",Cluster ,")")),text,sep=" : </p>"))%>%
+   leaflet(indicators_matrice%>%left_join(iso)%>%left_join(text_indicators_matrice)%>%mutate(text=paste(paste(Name,paste0("(",Cluster ,")")),text,sep=" : </p>"))%>%
             inner_join(zee,by=c("Alpha_3"="ISO_Ter1"))%>%st_as_sf())%>%addTiles()%>%
      addPolylines(weight = 1,color = "black")%>%
      addPolygons(stroke = FALSE, smoothFactor = 0.5, fillOpacity = 0.5,label =~lapply(text,htmltools::HTML)   , labelOptions = labelOptions( 
