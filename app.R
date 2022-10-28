@@ -33,6 +33,15 @@ library(gitlink)
 library(extrafont)
 library("emojifont")
 
+fmt_pvalue_with_stars <- function(x) {
+  dplyr::case_when(
+    x < 0.001 ~ paste0(style_pvalue(x), "***"),
+    x < 0.01 ~ paste0(style_pvalue(x), "**"),
+    x < 0.05 ~ paste0(style_pvalue(x), "*"),
+    TRUE ~ style_pvalue(x)
+  )
+}
+
 
 font_add_google(name = "Montserrat")
 showtext_auto()
@@ -66,7 +75,8 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
         font-weight: bold;
       font-size:18px;
       }
-    "))
+    ")),
+    tags$style(HTML("a {color: #ffc433;font-weight: bold;}"))
     ), 
       tabItems(
         tabItem(tabName = "presentation",fluidPage(mainPanel(ribbon_css("https://github.com/JonasBrouillon/Pacific-Dashboard.git", text = "Repository link", fade = T,position = "left"),
@@ -96,18 +106,18 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
             h1("Presentation of the Pacific countries indicators dashboard"),
             
             p("Welcome in the Pacific countries indicators dashboard.",style="font-size:20px;"),
-            p("This dashboard was created as part of the Pacific Dataviz Challenge 2022, the goal is to have a simple and friendly way to visualize the indicators provided by the Pacific Community (SPC)."),
-            p("The dashboard is composed of 5 tab decicated to differents thematics :"),
+            p("This dashboard was created as part of the" , a(href = 'https://dataviz.pacificdata.org/', ' Pacific Dataviz Challenge 2022 ', .noWS = "outside"), ", the goal is to have a simple and friendly way to visualize the indicators provided by the" , a(href = 'https://www.spc.int/', ' Pacific Community (SPC) ', .noWS = "outside"), ".",.noWS = c("after-begin", "before-end")),
+            p("The dashboard is composed of 5 tabs decicated to differents thematics :"),
             tags$div(tags$ul(
-              tags$li(tags$span(icon("person-cane"),"Structur by sex and age : provide pyramid population comparisons and indicators about sex & age structur.")),
-              tags$li(tags$span(icon("heart"),"Vitals stats : provide indicators about mortality and fecondity.")),
+              tags$li(tags$span(icon("person-cane"),"Structure by sex and age : provide pyramid population comparisons and indicators about sex & age structure.")),
+              tags$li(tags$span(icon("heart"),"Vital stats : provide indicators about mortality and fecondity.")),
               tags$li(icon("dollar"),tags$span("Economy : provide indicators about Gross Domestic Product (GDP) and trade.")),
               tags$li(icon("map"),tags$span("Geography : provide indicators about population density, urbanization and coastal population.")),
-              tags$li(icon("magnifying-glass"),tags$span("Correlations and variable crossing : provide crossed analysis of the differents variables using Hierarchical clustering."))
+              tags$li(icon("magnifying-glass"),tags$span("Correlations and variable crossing : provide crossed analysis of the differents variables using hierarchical clustering."))
               )),
-            p("The four first tab allow user to choose the indicator and the countries to display."),
+            p("The four first tabs allow user to choose the indicator and the countries to display."),
             p("User can plot the evolution of the indicator or display the last available values for it."),
-            p("Each tab also includes a map to visualize the indicator in space, the geographical units of the maps being the exclusive economic zone (EEZ) of each country."),width = 12),
+            p("Each tab also includes a map to visualize the indicator in space, the geographical units of the maps being the" , a(href = 'https://map.pacificdata.org/#share=s-8gcA4u3ykVQMJ9ptzKTG6QfMu2K', ' exclusive economic zone (EEZ) ', .noWS = "outside"), "of each country.",.noWS = c("after-begin", "before-end")),width = 12),
            
             
            fluidRow(column(h2("About the SPC members",tags$img(src = "spc_logo.png",width = 100)),  
@@ -120,11 +130,11 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
       
       tabItem(
         tabName = "pyramid",  
-   fluidPage( tags$style("#indicator_pyr1 {font-size:22px;}"),tags$style("#indicator_pyr2 {font-size:22px;}"),tags$style("#indicator_age {font-size:22px;}"),h1("Structure by sex and age : population projections and indicators"),   fluidRow(
+   fluidPage( tags$style("#indicator_pyr1 {font-size:22px;color: #ffc433;}"),tags$style("#indicator_pyr2 {font-size:22px;color: #ffc433;}"),tags$style("#indicator_age {font-size:22px;color: #ffc433;}"),h1("Structure by sex and age : population projections and indicators"),   fluidRow(
           box(closable = FALSE,collapsible = F,  title = p("Population pyramid 1",textOutput("indicator_pyr1"), style='font-size:22px;'), 
             actionButton(inputId = "pyr_button1","Choose countries and years", style='height:60px; font-size:18px;'),
             sidebar =  boxSidebar(id = "pyr_update1",p(style="font-family: 'Montserrat';","Countries and years"),  selectInput("pyr_country1", "First country", choices = levels(as.factor(structure_sexe_age_pacific$Name))),
-                         selectInput("pyr_year1", "First year", choices = levels(as.factor(structure_sexe_age_pacific$time_period)))
+                         selectInput("pyr_year1", "First year", choices = levels(as.factor(structure_sexe_age_pacific$time_period)),selected = "2022")
                          ),  
             htmlOutput("pyr_text1"), 
           tabsetPanel( 
@@ -134,7 +144,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
           box(closable = FALSE,collapsible = F,  title = p("Population pyramid 2",textOutput("indicator_pyr2"), style='font-size:22px;'), 
             actionButton(inputId = "pyr_button2","Choose countries and years", style='height:60px; font-size:18px;'),
             sidebar =  boxSidebar(id = "pyr_update2",p(style="font-family: 'Montserrat';","Countries and years"),  selectInput("pyr_country2", "Second country", choices = levels(as.factor(structure_sexe_age_pacific$Name)),selected = "Cook Islands"),
-                                  selectInput("pyr_year2", "Second year", choices = levels(as.factor(structure_sexe_age_pacific$time_period)))
+                                  selectInput("pyr_year2", "Second year", choices = levels(as.factor(structure_sexe_age_pacific$time_period)),selected = "2022")
             ),
             htmlOutput("pyr_text2"), 
             tabsetPanel( 
@@ -168,7 +178,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
         
         )),
         tabItem(
-          tabName = "vitals",fluidPage(tags$style("#indicator_vital {font-size:22px;}"),h1("Vitals stats : mortality and fecondity indicators"),  
+          tabName = "vitals",fluidPage(tags$style("#indicator_vital {font-size:22px;color: #ffc433;}"),h1("Vital stats : mortality and fecondity indicators"),  
            fluidRow(box(title = p(style="font-family: 'Montserrat';",textOutput("indicator_vital")), 
                        actionButton("vital_button1","Choose indicator and countries", style='height:60px; font-size:18px;'),
 
@@ -196,7 +206,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
           
           )),
    tabItem(
-     tabName = "gdp",fluidPage(tags$style("#indicator_gdp {font-size:22px;}"),h1("Economy : GDP and trade statistics"),  
+     tabName = "gdp",fluidPage(tags$style("#indicator_gdp {font-size:22px;color: #ffc433;}"),h1("Economy : GDP and trade statistics"),  
      fluidRow(box(title = p(style="font-family: 'Montserrat';",textOutput("indicator_gdp")), 
                   actionButton("gdp_button1","Choose indicator and countries", style='height:60px; font-size:18px;'),
                   
@@ -221,7 +231,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
      ))),
    
    tabItem(
-     tabName = "geography",fluidPage(tags$style("#indicator_geography {font-size:22px;}"),h1("Geography : use of land indicators"),  
+     tabName = "geography",fluidPage(tags$style("#indicator_geography {font-size:22px;color: #ffc433;}"),h1("Geography : use of land indicators"),  
      fluidRow(box(title = p(style="font-family: 'Montserrat';",textOutput("indicator_geography")), 
                   actionButton("geography_button1","Choose indicator and countries", style='height:60px; font-size:18px;'),
                   
@@ -246,7 +256,7 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
            fluidPage( h1("Correlations and variables crossing"),
            fluidRow(box(title = p("Hierarchical clustering analysis", style='font-size:22px;'),
              p("This page is an attempt at a global analysis by crossing the different variables presented in this dashboard."),
-                 p("12 variables were selected and a statistical analysis named 'Hierarchical clustering' was performed on the data. Data were previously normalized by substracting the minimum and dividing by the maximum of all observations."),
+                 p("12 variables were selected and a statistical analysis named", a(href = 'https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/hclust', ' hierarchical clustering ', .noWS = "outside"),  "was performed on the data. Data were previously" , a(href = 'https://www.rdocumentation.org/packages/heatmaply/versions/1.3.0/topics/percentize', ' normalized ', .noWS = "outside"), "to be on a 0 to 1 scale.",.noWS = c("after-begin", "before-end")),
                  p("This analysis permitted to classify Pacific countries into 3 groups :"),
              tags$div(tags$ul(
                tags$li(tags$span( "Group 1 : American Samoa , Cook Islands , Fiji , French Polynesia , Guam , New Caledonia , Niue , Northern Mariana Islands , Palau , Wallis and Futuna.",style="color:#E41A1C;"  ),
@@ -266,12 +276,12 @@ source(here("scripts", "preparation_donnees.R"),encoding = "utf8")
                  )),
              p("Summarised statistics for each group on the table below :"),
              gt_output("table_cluster")) ,
-
+             
              
              box(title = p("Heatmap of clusters", style='font-size:22px;'),
                  p("This side allows you to visualize indicators and clusters groups with heatmaps."),
                  p("Visualizing the data matrix in this way can help to find the variables that appear to be characteristic for each sample cluster."),
-                 p("Countries are ordering by their cluster group (colors in the right), data are normalized so values are from 0 to 1. More the cell is brown and more the value is high, more the cell is green and more the value is low."),
+                 p("Countries are ordering by their cluster group (colors in the right), data are normalized so values are from 0 to 1. More the cell is brown and more the variable value is high, more the cell is green and more the variable value is low (variables names are in the bottom)."),
               plotlyOutput( "heatmap1",height = "56em"))),
             fluidRow(box(title = p("Map of the clusters", style='font-size:22px;'),  leafletOutput("map_cluster",height = "68em")),
              box(title = p("Heatmap of the correlation matrix", style='font-size:22px;'), p("The second heatmap allow you to visualize the correlation matrix betwen variables."),
@@ -1170,7 +1180,9 @@ output$table_cluster <- render_gt(
     by=Cluster , 
     statistic = all_continuous() ~ "{mean} ({min}, {max})"
   ) %>%    
-    add_p( )%>%bold_p()%>%
+   add_p() %>%
+   modify_footnote(p.value ~ "Kruskal-Wallis rank sum test : if the test value is inferior to 0.05, differences between groups are statistically significant")%>%
+   bold_p()%>%
     bold_labels()%>%modify_table_styling(
       columns = label,
       rows = label == "Life expectancy at birth",
